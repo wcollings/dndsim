@@ -3,8 +3,12 @@
 #include <cmath>
 Simulation::Simulation()
 {
-	PCwin=0;
-	NPCwin=0;
+	out.open("results.csv");
+}
+
+Simulation::~Simulation()
+{
+	out.close();
 }
 
 void Simulation::addPC(Char pc)
@@ -21,42 +25,49 @@ void Simulation::simulate()
 {
 	for (int i=0; i <100; ++i)
 	{
-		
+		simulateBattle();
+#if logging
+		for (auto j:PCs)
+		{
+			out <<"run " <<i+1 <<"\n"
+			<<"char:," <<j.name <<",avg," <<j.total/100 <<"\n"
+			<<"Highest," <<j.highest <<"\n"
+			<<"Lowest," <<j.lowest <<"\n";
+		}
+		out <<"char:, Boss" <<",avg," <<boss.total/100 <<"\n"
+		<<"Highest," <<boss.highest <<"\n"
+		<<"Lowest," <<boss.lowest <<"\n";
+#endif
+		for (auto j:PCs)
+		{
+			j.total=0;
+			j.highest=0;
+			j.lowest=100;
+		}
+		boss.total=0;
+		boss.highest=0;
+		boss.lowest=100;
 	}
-
 }
 
-void Simulation::simulateBattle(int strategy)
+void Simulation::simulateBattle()
 {
-	std::vector<int> startingHP;
-	int target=0;
-	bool done=false;
-	for (auto i : PCs)
+	int result=0;
+	for (int i=0; i < 100; ++i)
 	{
-		startingHP.push_back(i.hp);
-	}
-	startingHP.push_back(boss.hp);
-	while (!done)
-	{
-		PCs[target].hit(roll(roll(boss.toHit), roll(boss.damage));
-		if (PCs[target].isDead())
+		for (auto j : PCs)
 		{
-			PCs.erase(PCs.begin()+target);
-
+			result=roll(j.toHit);
+			j.rolls[i]=result;
+			if (j.highest < result) j.highest=result;
+			if (j.lowest > result) j.lowest=result;
 		}
-		for (int i=0; i < 3; ++i)
-		{
-			if (PCs.size() >=i)
-				boss.hit(roll(PCs[i].toHit), roll(PCs[i].damage));
-		if (boss.isDead())
-		{
-			PCwin++;
-			return;
-		}
-
+		result=roll(boss.toHit);
+		boss.rolls[i]=result;
+		if (boss.highest < result) boss.highest=result;
+		if (boss.lowest > result) boss.lowest=result;
 
 	}
-
 }
 
 int roll(std::tuple<int, int, int> die)

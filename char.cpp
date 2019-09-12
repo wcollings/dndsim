@@ -1,10 +1,20 @@
 #include "Char.hpp"
 
+Char::Char()
+{
+	highest=0;
+	lowest=100;
+	total=0;
+}
+
 Char::Char(int AC, int HP)
 {
 	ac=AC;
-	hp=HP;
 	toHit=HIT;
+	highest=0;
+	lowest=100;
+	total=0;
+
 }
 
 void Char::setHit(int dice, int val, int bonus)

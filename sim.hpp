@@ -2,12 +2,12 @@
 #define __SIM_H__
 #include "Char.hpp"
 #include <vector>
+#include <fstream>
 class Simulation{
 	public:
-		int PCwin;
-		int NPCwin;
 		std::vector<Char> PCs;
 		Char boss;
+		std::ofstream out;
 	Simulation();
 	void addPC(Char);
 	void setNPC(Char);
